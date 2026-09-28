@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calculateur de dates</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="js/app.js" type="module"></script>
+  </head>
+  <body>
+    <main class="app">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">Outil de calcul</p>
+          <h1>Calculateur de dates</h1>
+          <p class="subtitle">Dates, délais, jours ouvrés et calendaires.</p>
+        </div>
+      </header>
+
+      <nav class="tabs" aria-label="Outils">
+        <div class="tab-indicator"></div>
+        <button class="tab active" data-tab="weekday">
+          Jour de la semaine
+        </button>
+        <button class="tab" data-tab="difference">Différence</button>
+        <button class="tab" data-tab="add">Ajouter / retirer</button>
+        <button class="tab" data-tab="business">Jours ouvrés</button>
+      </nav>
+
+      <section class="panel active" id="weekday">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Calcul direct</p>
+            <h2>Jour de la semaine</h2>
+            <p>
+              Entrez la date manuellement. Le calcul utilise la congruence de
+              Zeller.
+            </p>
+          </div>
+        </div>
+
+        <div class="date-manual">
+          <label
+            >Jour
+            <input
+              id="weekday-day"
+              type="number"
+              min="1"
+              max="31"
+              placeholder="01"
+          /></label>
+          <label
+            >Mois
+            <select id="weekday-month">
+              <option value="">Mois</option>
+              <option value="1">Janvier</option>
+              <option value="2">Février</option>
+              <option value="3">Mars</option>
+              <option value="4">Avril</option>
+              <option value="5">Mai</option>
+              <option value="6">Juin</option>
+              <option value="7">Juillet</option>
+              <option value="8">Août</option>
+              <option value="9">Septembre</option>
+              <option value="10">Octobre</option>
+              <option value="11">Novembre</option>
+              <option value="12">Décembre</option>
+            </select>
+          </label>
+          <label
+            >Année
+            <input
+              id="weekday-year"
+              type="number"
+              min="1"
+              max="9999"
+              placeholder="2000"
+          /></label>
+        </div>
+        <button class="primary" id="weekday-calculate">Calculer</button>
+        <div class="result" id="weekday-result" aria-live="polite"></div>
+      </section>
+
+      <section class="panel" id="difference">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Deux dates</p>
+            <h2>Différence entre deux dates</h2>
+            <p>Comparez une période en jours, semaines, mois et années.</p>
+          </div>
+        </div>
+
+        <div class="date-grid">
+          <label>Date de début <input id="diff-start" type="date" /></label>
+          <label>Date de fin <input id="diff-end" type="date" /></label>
+        </div>
+        <button class="primary" id="diff-calculate">Calculer</button>
+        <div class="result" id="diff-result" aria-live="polite"></div>
+      </section>
+
+      <section class="panel" id="add">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Échéance</p>
+            <h2>Ajouter ou retirer une durée</h2>
+            <p>
+              Calculez une date future ou passée à partir d'une date de départ.
+            </p>
+          </div>
+        </div>
+
+        <div class="date-grid">
+          <label>Date de départ <input id="add-date" type="date" /></label>
+          <label
+            >Opération
+            <select id="add-operation">
+              <option value="add">Ajouter</option>
+              <option value="subtract">Retirer</option>
+            </select>
+          </label>
+          <label
+            >Valeur <input id="add-value" type="number" min="0" value="10"
+          /></label>
+          <label
+            >Unité
+            <select id="add-unit">
+              <option value="days">jours</option>
+              <option value="weeks">semaines</option>
+              <option value="months">mois</option>
+              <option value="years">années</option>
+            </select>
+          </label>
+        </div>
+        <button class="primary" id="add-calculate">Calculer</button>
+        <div class="result" id="add-result" aria-live="polite"></div>
+      </section>
+
+      <section class="panel" id="business">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Travail / administratif</p>
+            <h2>Jours ouvrés et ouvrables</h2>
+            <p>
+              Décomptez une période en tenant compte des week-ends et des jours
+              fériés français.
+            </p>
+          </div>
+        </div>
+
+        <div class="date-grid">
+          <label>Date de début <input id="business-start" type="date" /></label>
+          <label>Date de fin <input id="business-end" type="date" /></label>
+        </div>
+
+        <div class="options">
+          <label
+            ><input id="business-holidays" type="checkbox" checked /> Exclure
+            les jours fériés français</label
+          >
+          <label
+            ><input id="business-saturday" type="checkbox" /> Considérer le
+            samedi comme jour ouvré</label
+          >
+        </div>
+
+        <button class="primary" id="business-calculate">Calculer</button>
+        <div class="result" id="business-result" aria-live="polite"></div>
+      </section>
+
+      <footer>
+        <p>
+          Les calculs de jours ouvrés/ouvrables utilisent des conventions
+          générales. Les règles peuvent dépendre du secteur, de l'entreprise ou
+          du contexte juridique.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>
