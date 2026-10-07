@@ -8,16 +8,22 @@ export const WEEKDAYS = [
 ];
 
 export function parseISODate(value) {
-  if (!value) return null;
-  const [year, month, day] = value.split("-").map(Number);
-  if (!year || !month || !day) return null;
+  if (!value || typeof value !== "string") return null;
+  const parts = value.split("-").map(Number);
+  if (parts.length !== 3) return null;
+  const [year, month, day] = parts;
+  if (!isValidDateParts(year, month, day)) return null;
   return { year, month, day };
 }
 
 export function formatDate(date) {
+  const d = date instanceof Date ? date : toUTCDate(date);
   return new Intl.DateTimeFormat("fr-FR", {
-    day: "2-digit", month: "2-digit", year: "numeric"
-  }).format(date);
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(d);
 }
 
 export function toUTCDate({ year, month, day }) {
@@ -33,10 +39,14 @@ export function fromUTCDate(date) {
 }
 
 export function isLeapYear(year) {
+  if (!Number.isInteger(year)) return false;
   return year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
 }
 
 export function daysInMonth(year, month) {
+  if (!Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) {
+    return 0;
+  }
   const lengths = [31, isLeapYear(year) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
   return lengths[month - 1];
 }
@@ -47,12 +57,31 @@ export function isValidDateParts(year, month, day) {
     && day >= 1 && day <= daysInMonth(year, month);
 }
 
+export function getDayOfWeek(year, month, day) {
+  let m = month;
+  let y = year;
+  if (m < 3) {
+    m += 12;
+    y -= 1;
+  }
+  const K = y % 100;
+  const J = Math.floor(y / 100);
+  const h = (day + Math.floor((13 * (m + 1)) / 5) + K + Math.floor(K / 4) + Math.floor(J / 4) - 2 * J) % 7;
+  // Zeller: 0=samedi, 1=dimanche, 2=lundi, 3=mardi, 4=mercredi, 5=jeudi, 6=vendredi
+  const days = ["samedi", "dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi"];
+  return days[((h % 7) + 7) % 7];
+}
+
 export function compareDates(a, b) {
-  return toUTCDate(a) - toUTCDate(b);
+  if (a.year !== b.year) return a.year - b.year;
+  if (a.month !== b.month) return a.month - b.month;
+  return a.day - b.day;
 }
 
 export function calendarDaysBetween(a, b) {
-  return Math.round(Math.abs(compareDates(a, b)) / 86400000);
+  const utcA = Date.UTC(a.year, a.month - 1, a.day);
+  const utcB = Date.UTC(b.year, b.month - 1, b.day);
+  return Math.round(Math.abs(utcB - utcA) / 86400000);
 }
 
 export function addCalendarDays(date, amount) {
@@ -62,16 +91,20 @@ export function addCalendarDays(date, amount) {
 }
 
 export function addMonths(date, amount) {
-  const d = toUTCDate(date);
-  const originalDay = d.getUTCDate();
-  d.setUTCDate(1);
-  d.setUTCMonth(d.getUTCMonth() + amount);
-  d.setUTCDate(Math.min(originalDay, daysInMonth(d.getUTCFullYear(), d.getUTCMonth() + 1)));
-  return fromUTCDate(d);
+  const totalMonths = date.year * 12 + (date.month - 1) + amount;
+  const targetYear = Math.floor(totalMonths / 12);
+  const targetMonth = ((totalMonths % 12) + 12) % 12 + 1;
+  const maxDay = daysInMonth(targetYear, targetMonth);
+  const targetDay = Math.min(date.day, maxDay);
+  return { year: targetYear, month: targetMonth, day: targetDay };
 }
 
 export function addYears(date, amount) {
-  return addMonths(date, amount * 12);
+  const targetYear = date.year + amount;
+  const targetMonth = date.month;
+  const maxDay = daysInMonth(targetYear, targetMonth);
+  const targetDay = Math.min(date.day, maxDay);
+  return { year: targetYear, month: targetMonth, day: targetDay };
 }
 
 export function iso(date) {
@@ -83,11 +116,33 @@ export function humanDate(date) {
 }
 
 export function formatDuration(a, b) {
-  let start = a, end = b;
-  if (compareDates(start, end) > 0) [start, end] = [end, start];
+  if (typeof a === "number" && b === undefined) {
+    const days = Math.abs(a);
+    return {
+      days,
+      weeks: Math.floor(days / 7),
+      remainingDays: days % 7,
+      months: Math.floor(days / 30.4375),
+      years: Math.floor(days / 365.25)
+    };
+  }
 
+  let start = a, end = b;
+  let inverted = false;
+  if (compareDates(start, end) > 0) {
+    start = b;
+    end = a;
+    inverted = true;
+  }
+
+  const totalDays = calendarDaysBetween(start, end);
+  const weeks = Math.floor(totalDays / 7);
+  const remainingDays = totalDays % 7;
+
+  // Years + months + days calculation
   let cursor = { ...start };
-  let years = 0, months = 0;
+  let years = 0;
+  let months = 0;
 
   while (compareDates(addYears(cursor, 1), end) <= 0) {
     cursor = addYears(cursor, 1);
@@ -97,6 +152,26 @@ export function formatDuration(a, b) {
     cursor = addMonths(cursor, 1);
     months++;
   }
+  const days = calendarDaysBetween(cursor, end);
 
-  return { years, months, days: calendarDaysBetween(cursor, end) };
+  // Months + days breakdown
+  let cursorM = { ...start };
+  let totalMonths = 0;
+  while (compareDates(addMonths(cursorM, 1), end) <= 0) {
+    cursorM = addMonths(cursorM, 1);
+    totalMonths++;
+  }
+  const daysAfterMonths = calendarDaysBetween(cursorM, end);
+
+  return {
+    years,
+    months,
+    days,
+    totalMonths,
+    daysAfterMonths,
+    totalDays,
+    weeks,
+    remainingDays,
+    inverted
+  };
 }

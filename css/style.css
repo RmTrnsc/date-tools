@@ -62,6 +62,10 @@ h2 {
   margin: 8px 0 0;
 }
 
+/* ========================================== */
+/* TABS & NAVIGATION (TWO-TIER HIERARCHY)     */
+/* ========================================== */
+
 .tabs {
   position: relative;
   display: flex;
@@ -69,32 +73,81 @@ h2 {
   padding: 6px;
   background: #e9ebef;
   border-radius: 14px;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   overflow: hidden;
 }
 
+/* Tier 1: Main Categories Bar */
+.tabs-categories {
+  background: #e3e6ec;
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+
+.tabs-categories .tab {
+  flex: 1 1 0;
+  text-align: center;
+  font-size: 0.95rem;
+  padding: 12px 14px;
+}
+
+/* Tier 2: Sub-tabs Container & Bars */
+.subtabs-container {
+  margin-bottom: 14px;
+}
+
+.tabs-sub {
+  background: #ebeef3;
+  border-radius: 12px;
+  margin-bottom: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  justify-content: center;
+}
+
+.tabs-sub::-webkit-scrollbar {
+  display: none;
+}
+
+.tabs-sub[hidden] {
+  display: none !important;
+}
+
+.tabs-sub .tab {
+  flex: 0 0 auto;
+  font-size: 0.86rem;
+  padding: 9px 14px;
+  white-space: nowrap;
+}
+
+/* Generic Tab Button */
 .tab {
   position: relative;
-  flex: 1 0 auto;
   border: 0;
   background: transparent;
   color: #555c67;
-  padding: 11px 14px;
   border-radius: 10px;
   cursor: pointer;
   font: inherit;
   font-weight: 650;
   z-index: 1;
+  transition: color 0.2s ease;
+}
+
+.tab:hover {
+  color: #20242b;
 }
 
 .tab.active {
   color: #20242b;
 }
 
+/* Sliding Pill Indicator */
 .tab-indicator {
   position: absolute;
   top: 6px;
-  left: 6px;
+  left: 0;
   height: calc(100% - 12px);
   width: 0;
   background: white;
@@ -103,9 +156,14 @@ h2 {
   z-index: 0;
   transform: translateX(0);
   transition:
-    transform 0.25s ease,
-    width 0.25s ease;
+    transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
 }
+
+/* ========================================== */
+/* COMPACT PANELS & FORM CONTROLS            */
+/* ========================================== */
 
 .panel {
   display: none;
@@ -156,6 +214,7 @@ select {
   font: inherit;
   font-weight: 500;
 }
+
 input:focus,
 select:focus {
   outline: 3px solid #00000010;
@@ -172,11 +231,16 @@ select:focus {
   font: inherit;
   font-weight: 700;
   cursor: pointer;
+  transition: background 0.15s ease;
 }
 
 .primary:hover {
   background: #343943;
 }
+
+/* ========================================== */
+/* RESULTS AREA                               */
+/* ========================================== */
 
 .result {
   margin-top: 18px;
@@ -243,6 +307,27 @@ select:focus {
   font-size: 0.85rem;
 }
 
+/* ========================================== */
+/* LOADING ANIMATION                          */
+/* ========================================== */
+@keyframes ellipsis {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+}
+.loading-dots::after {
+  content: '';
+  display: inline-block;
+  width: 1em;
+  text-align: left;
+  animation: ellipsis 1.5s infinite;
+}
+
+/* ========================================== */
+/* ADS & NATURAL FLOW FOOTER                  */
+/* ========================================== */
+
 .ad-container {
   width: 100%;
   min-height: 90px;
@@ -253,10 +338,8 @@ select:focus {
 }
 
 footer {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: static;
+  margin: 40px auto 16px;
   width: 100%;
   text-align: center;
   color: #777e89;
@@ -264,21 +347,34 @@ footer {
   line-height: 1.5;
 }
 
+/* ========================================== */
+/* RESPONSIVE DESIGN                          */
+/* ========================================== */
+
 @media (max-width: 650px) {
   .app {
-    margin: 24px auto;
+    margin: 16px auto;
   }
   .panel {
     padding: 20px;
   }
   .date-manual,
-  .date-grid {
+  .date-grid,
+  .result-grid {
     grid-template-columns: 1fr;
   }
-  .tabs {
-    justify-content: flex-start;
+  .tabs-categories {
+    overflow-x: auto;
+    scrollbar-width: none;
   }
-  .tab {
+  .tabs-categories::-webkit-scrollbar {
+    display: none;
+  }
+  .tabs-categories .tab {
     flex: 0 0 auto;
+    padding: 10px 14px;
+  }
+  .tabs-sub {
+    justify-content: flex-start;
   }
 }

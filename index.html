@@ -14,44 +14,77 @@
         <div>
           <p class="eyebrow">Outil de calcul</p>
           <h1>Calculateur de dates</h1>
-          <p class="subtitle">Dates, délais, jours ouvrés et calendaires.</p>
+          <p class="subtitle">Dates, délais, jours ouvrés et calendriers.</p>
         </div>
       </header>
 
-      <nav class="tabs" aria-label="Outils">
-        <div class="tab-indicator"></div>
-        <button class="tab active" data-tab="weekday">
-          Jour de la semaine
-        </button>
-        <button class="tab" data-tab="difference">Différence</button>
-        <button class="tab" data-tab="add">Ajouter / retirer</button>
-        <button class="tab" data-tab="business">Jours ouvrés</button>
+      <!-- Tier 1: Catégories principales -->
+      <nav class="tabs tabs-categories" aria-label="Catégories principales">
+        <div class="tab-indicator" id="category-indicator"></div>
+        <button class="tab active" data-category="dates">Dates</button>
+        <button class="tab" data-category="work">Travail</button>
+        <button class="tab" data-category="calendar">Calendrier</button>
+        <button class="tab" data-category="misc">Divers</button>
       </nav>
 
+      <!-- Tier 2: Sous-onglets par catégorie -->
+      <div class="subtabs-container">
+        <!-- Catégorie: Dates -->
+        <nav class="tabs tabs-sub active" id="subtabs-dates" data-category="dates" aria-label="Outils Dates">
+          <div class="tab-indicator"></div>
+          <button class="tab active" data-tab="weekday">Jour de la semaine</button>
+          <button class="tab" data-tab="difference">Différence</button>
+          <button class="tab" data-tab="add-remove">Ajouter / retirer</button>
+          <button class="tab" data-tab="countdown-relative">Dans combien de temps ?</button>
+          <button class="tab" data-tab="age">Âge / anniversaire</button>
+          <button class="tab" data-tab="iso-week">Numéro de semaine</button>
+          <button class="tab" data-tab="find-date">Trouver une date</button>
+        </nav>
+
+        <!-- Catégorie: Travail -->
+        <nav class="tabs tabs-sub" id="subtabs-work" data-category="work" aria-label="Outils Travail" hidden>
+          <div class="tab-indicator"></div>
+          <button class="tab active" data-tab="business">Jours ouvrés</button>
+          <button class="tab" data-tab="business-add">Ajouter / retirer ouvrés</button>
+          <button class="tab" data-tab="vacation">Congés</button>
+          <button class="tab" data-tab="deadline">Échéance</button>
+          <button class="tab" data-tab="notice">Préavis</button>
+          <button class="tab" data-tab="holidays-list">Jours fériés</button>
+        </nav>
+
+        <!-- Catégorie: Calendrier -->
+        <nav class="tabs tabs-sub" id="subtabs-calendar" data-category="calendar" aria-label="Outils Calendrier" hidden>
+          <div class="tab-indicator"></div>
+          <button class="tab active" data-tab="calendar-month">Calendrier mensuel</button>
+          <button class="tab" data-tab="calendar-year">Calendrier annuel</button>
+          <button class="tab" data-tab="calendar-holidays">Jours fériés de l'année</button>
+        </nav>
+
+        <!-- Catégorie: Divers -->
+        <nav class="tabs tabs-sub" id="subtabs-misc" data-category="misc" aria-label="Outils Divers" hidden>
+          <div class="tab-indicator"></div>
+          <button class="tab active" data-tab="countdown-timer">Compte à rebours</button>
+          <button class="tab" data-tab="duration-convert">Conversion de durée</button>
+          <button class="tab" data-tab="exact-duration">Durée exacte</button>
+        </nav>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- PANELS : CATEGORIE DATES                   -->
+      <!-- ========================================== -->
+
+      <!-- 1. Jour de la semaine -->
       <section class="panel active" id="weekday">
         <div class="panel-heading">
           <div>
             <p class="eyebrow">Calcul direct</p>
             <h2>Jour de la semaine</h2>
-            <p>
-              Entrez la date manuellement. Le calcul utilise la congruence de
-              Zeller.
-            </p>
+            <p>Entrez la date manuellement. Le calcul utilise la congruence de Zeller.</p>
           </div>
         </div>
-
         <div class="date-manual">
-          <label
-            >Jour
-            <input
-              id="weekday-day"
-              type="number"
-              min="1"
-              max="31"
-              placeholder="01"
-          /></label>
-          <label
-            >Mois
+          <label>Jour <input id="weekday-day" type="number" min="1" max="31" placeholder="01" /></label>
+          <label>Mois
             <select id="weekday-month">
               <option value="">Mois</option>
               <option value="1">Janvier</option>
@@ -68,20 +101,13 @@
               <option value="12">Décembre</option>
             </select>
           </label>
-          <label
-            >Année
-            <input
-              id="weekday-year"
-              type="number"
-              min="1"
-              max="9999"
-              placeholder="2000"
-          /></label>
+          <label>Année <input id="weekday-year" type="number" min="1" max="9999" placeholder="2000" /></label>
         </div>
         <button class="primary" id="weekday-calculate">Calculer</button>
         <div class="result" id="weekday-result" aria-live="polite"></div>
       </section>
 
+      <!-- 2. Différence entre deux dates -->
       <section class="panel" id="difference">
         <div class="panel-heading">
           <div>
@@ -90,7 +116,6 @@
             <p>Comparez une période en jours, semaines, mois et années.</p>
           </div>
         </div>
-
         <div class="date-grid">
           <label>Date de début <input id="diff-start" type="date" /></label>
           <label>Date de fin <input id="diff-end" type="date" /></label>
@@ -99,31 +124,25 @@
         <div class="result" id="diff-result" aria-live="polite"></div>
       </section>
 
-      <section class="panel" id="add">
+      <!-- 3. Ajouter / retirer une durée -->
+      <section class="panel" id="add-remove">
         <div class="panel-heading">
           <div>
             <p class="eyebrow">Échéance</p>
             <h2>Ajouter ou retirer une durée</h2>
-            <p>
-              Calculez une date future ou passée à partir d'une date de départ.
-            </p>
+            <p>Calculez une date future ou passée à partir d'une date de départ.</p>
           </div>
         </div>
-
         <div class="date-grid">
           <label>Date de départ <input id="add-date" type="date" /></label>
-          <label
-            >Opération
+          <label>Opération
             <select id="add-operation">
               <option value="add">Ajouter</option>
               <option value="subtract">Retirer</option>
             </select>
           </label>
-          <label
-            >Valeur <input id="add-value" type="number" min="0" value="10"
-          /></label>
-          <label
-            >Unité
+          <label>Valeur <input id="add-value" type="number" min="0" value="10" /></label>
+          <label>Unité
             <select id="add-unit">
               <option value="days">jours</option>
               <option value="weeks">semaines</option>
@@ -136,36 +155,306 @@
         <div class="result" id="add-result" aria-live="polite"></div>
       </section>
 
+      <!-- 4. Dans combien de temps ? -->
+      <section class="panel" id="countdown-relative">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Projection</p>
+            <h2>Dans combien de temps ?</h2>
+            <p>Découvrez le nombre de jours et semaines restant jusqu'à une date cible.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Date cible <input id="rel-target" type="date" /></label>
+          <label>Date de référence <input id="rel-base" type="date" /></label>
+        </div>
+        <button class="primary" id="rel-calculate">Calculer</button>
+        <div class="result" id="rel-result" aria-live="polite"></div>
+      </section>
+
+      <!-- 5. Âge / anniversaire -->
+      <section class="panel" id="age">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Identité & Temps</p>
+            <h2>Âge et prochain anniversaire</h2>
+            <p>Calculez un âge précis en années, mois et jours ainsi que la date du prochain anniversaire.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Date de naissance <input id="age-birth" type="date" /></label>
+          <label>Date de calcul (aujourd'hui par défaut) <input id="age-target" type="date" /></label>
+        </div>
+        <button class="primary" id="age-calculate">Calculer</button>
+        <div class="result" id="age-result" aria-live="polite"></div>
+      </section>
+
+      <!-- 6. Numéro de semaine -->
+      <section class="panel" id="iso-week">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Norme ISO 8601</p>
+            <h2>Numéro de semaine</h2>
+            <p>Identifiez la semaine ISO d'une date ainsi que ses dates de début et de fin.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Choisir une date <input id="isoweek-date" type="date" /></label>
+        </div>
+        <button class="primary" id="isoweek-calculate">Calculer</button>
+        <div class="result" id="isoweek-result" aria-live="polite"></div>
+      </section>
+
+      <!-- 7. Trouver une date -->
+      <section class="panel" id="find-date">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Recherche</p>
+            <h2>Trouver une date</h2>
+            <p>Recherchez un jour spécifique (ex. le 3e jeudi du mois ou après N jours).</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Date de départ <input id="find-date-input" type="date" /></label>
+          <label>Décalage (jours) <input id="find-offset" type="number" value="100" /></label>
+        </div>
+        <button class="primary" id="find-calculate">Calculer</button>
+        <div class="result" id="find-result" aria-live="polite"></div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- PANELS : CATEGORIE TRAVAIL                 -->
+      <!-- ========================================== -->
+
+      <!-- 8. Jours ouvrés -->
       <section class="panel" id="business">
         <div class="panel-heading">
           <div>
             <p class="eyebrow">Travail / administratif</p>
             <h2>Jours ouvrés et ouvrables</h2>
-            <p>
-              Décomptez une période en tenant compte des week-ends et des jours
-              fériés français.
-            </p>
+            <p>Décomptez une période en tenant compte des week-ends et des jours fériés français.</p>
           </div>
         </div>
-
         <div class="date-grid">
           <label>Date de début <input id="business-start" type="date" /></label>
           <label>Date de fin <input id="business-end" type="date" /></label>
         </div>
-
         <div class="options">
-          <label
-            ><input id="business-holidays" type="checkbox" checked /> Exclure
-            les jours fériés français</label
-          >
-          <label
-            ><input id="business-saturday" type="checkbox" /> Considérer le
-            samedi comme jour ouvré</label
-          >
+          <label><input id="business-holidays" type="checkbox" checked /> Exclure les jours fériés français</label>
+          <label><input id="business-saturday" type="checkbox" /> Considérer le samedi comme jour ouvré</label>
         </div>
-
         <button class="primary" id="business-calculate">Calculer</button>
         <div class="result" id="business-result" aria-live="polite"></div>
+      </section>
+
+      <!-- 9. Ajouter / retirer ouvrés -->
+      <section class="panel" id="business-add">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Travail</p>
+            <h2>Ajouter ou retirer des jours ouvrés</h2>
+            <p>Ajoutez un nombre de jours ouvrés en sautant automatiquement les week-ends et jours fériés.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Date de départ <input id="badd-date" type="date" /></label>
+          <label>Nombre de jours ouvrés <input id="badd-count" type="number" value="5" /></label>
+        </div>
+        <div class="options">
+          <label><input id="badd-holidays" type="checkbox" checked /> Exclure les jours fériés français</label>
+          <label><input id="badd-saturday" type="checkbox" /> Inclure le samedi comme ouvré</label>
+        </div>
+        <button class="primary" id="badd-calculate">Calculer</button>
+        <div class="result" id="badd-result" aria-live="polite"></div>
+      </section>
+
+      <!-- 10. Congés -->
+      <section class="panel" id="vacation">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Ressources humaines</p>
+            <h2>Calculateur de congés</h2>
+            <p>Estimez le nombre de jours de congés à poser et la date effective de reprise.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Départ en congés <input id="vacation-start" type="date" /></label>
+          <label>Dernier jour de congés <input id="vacation-end" type="date" /></label>
+        </div>
+        <button class="primary" id="vacation-calculate">Calculer</button>
+        <div class="result" id="vacation-result" aria-live="polite"></div>
+      </section>
+
+      <!-- 11. Échéance -->
+      <section class="panel" id="deadline">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Délais légaux</p>
+            <h2>Calculateur d'échéance</h2>
+            <p>Déterminez la date limite exacte selon un délai calendaire ou ouvré.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Date de notification <input id="deadline-date" type="date" /></label>
+          <label>Délai (jours) <input id="deadline-days" type="number" value="15" /></label>
+        </div>
+        <button class="primary" id="deadline-calculate">Calculer</button>
+        <div class="result" id="deadline-result" aria-live="polite"></div>
+      </section>
+
+      <!-- 12. Préavis -->
+      <section class="panel" id="notice">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Droit du travail</p>
+            <h2>Calculateur de préavis</h2>
+            <p>Calculez la fin théorique de préavis en mois calendaires.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Date de notification <input id="notice-date" type="date" /></label>
+          <label>Durée du préavis (mois) <input id="notice-months" type="number" value="3" min="1" /></label>
+        </div>
+        <button class="primary" id="notice-calculate">Calculer</button>
+        <div class="result" id="notice-result" aria-live="polite"></div>
+      </section>
+
+      <!-- 13. Jours fériés -->
+      <section class="panel" id="holidays-list">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Calendrier officiel</p>
+            <h2>Liste des jours fériés français</h2>
+            <p>Consultez les 11 jours fériés statutaires pour une année sélectionnée.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Année <input id="holidays-year" type="number" value="2026" min="1900" max="2100" /></label>
+        </div>
+        <button class="primary" id="holidays-calculate">Afficher les fériés</button>
+        <div class="result" id="holidays-result" aria-live="polite"></div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- PANELS : CATEGORIE CALENDRIER              -->
+      <!-- ========================================== -->
+
+      <!-- 14. Calendrier mensuel -->
+      <section class="panel" id="calendar-month">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Navigation</p>
+            <h2>Calendrier mensuel</h2>
+            <p>Vue mensuelle avec mise en évidence des jours fériés et des semaines ISO.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Mois
+            <select id="cal-month-select">
+              <option value="1">Janvier</option>
+              <option value="2">Février</option>
+              <option value="3">Mars</option>
+              <option value="4">Avril</option>
+              <option value="5">Mai</option>
+              <option value="6">Juin</option>
+              <option value="7">Juillet</option>
+              <option value="8">Août</option>
+              <option value="9">Septembre</option>
+              <option value="10">Octobre</option>
+              <option value="11">Novembre</option>
+              <option value="12">Décembre</option>
+            </select>
+          </label>
+          <label>Année <input id="cal-year-input" type="number" value="2026" /></label>
+        </div>
+        <button class="primary" id="cal-month-view">Afficher le calendrier</button>
+        <div class="result" id="cal-month-result" aria-live="polite"></div>
+      </section>
+
+      <!-- 15. Calendrier annuel -->
+      <section class="panel" id="calendar-year">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Vue d'ensemble</p>
+            <h2>Calendrier annuel</h2>
+            <p>Synthèse compacte des 12 mois de l'année.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Année <input id="cal-annual-year" type="number" value="2026" /></label>
+        </div>
+        <button class="primary" id="cal-annual-view">Afficher l'année</button>
+        <div class="result" id="cal-annual-result" aria-live="polite"></div>
+      </section>
+
+      <!-- 16. Jours fériés de l'année -->
+      <section class="panel" id="calendar-holidays">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Répartition</p>
+            <h2>Jours fériés de l'année</h2>
+            <p>Visualisation des jours fériés tombant en semaine ou en week-end.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Année <input id="cal-holidays-year" type="number" value="2026" /></label>
+        </div>
+        <button class="primary" id="cal-holidays-view">Analyser les ponts et fériés</button>
+        <div class="result" id="cal-holidays-result" aria-live="polite"></div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- PANELS : CATEGORIE DIVERS                  -->
+      <!-- ========================================== -->
+
+      <!-- 17. Compte à rebours -->
+      <section class="panel" id="countdown-timer">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Temps réel</p>
+            <h2>Compte à rebours</h2>
+            <p>Décompte en direct jusqu'à une échéance précise.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Date cible <input id="timer-date" type="date" /></label>
+          <label>Heure cible <input id="timer-time" type="time" value="00:00" /></label>
+        </div>
+        <button class="primary" id="timer-start">Lancer le compte à rebours</button>
+        <div class="result" id="timer-result" aria-live="polite"></div>
+      </section>
+
+      <!-- 18. Conversion de durée -->
+      <section class="panel" id="duration-convert">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Unités</p>
+            <h2>Conversion de durée</h2>
+            <p>Convertissez une quantité de jours en heures, minutes, secondes et semaines.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Nombre de jours <input id="conv-days" type="number" value="7" min="0" /></label>
+        </div>
+        <button class="primary" id="conv-calculate">Convertir</button>
+        <div class="result" id="conv-result" aria-live="polite"></div>
+      </section>
+
+      <!-- 19. Durée exacte -->
+      <section class="panel" id="exact-duration">
+        <div class="panel-heading">
+          <div>
+            <p class="eyebrow">Précision</p>
+            <h2>Durée exacte</h2>
+            <p>Déterminez la durée exacte entre deux dates et heures.</p>
+          </div>
+        </div>
+        <div class="date-grid">
+          <label>Début <input id="exact-start" type="datetime-local" /></label>
+          <label>Fin <input id="exact-end" type="datetime-local" /></label>
+        </div>
+        <button class="primary" id="exact-calculate">Calculer la durée</button>
+        <div class="result" id="exact-result" aria-live="polite"></div>
       </section>
 
       <section class="ad-container"></section>

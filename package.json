@@ -1,0 +1,9 @@
+{
+  "name": "date-tools",
+  "version": "2.0.0",
+  "type": "module",
+  "description": "Boîte à outils de calcul autour des dates",
+  "scripts": {
+    "test": "node test-dates.js"
+  }
+}
